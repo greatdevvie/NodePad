@@ -1,22 +1,16 @@
 import '@mantine/core/styles.css';
-import { Divider, Grid, MantineProvider } from '@mantine/core';
-import SidePanel from './components/sidepanel/sidepanel';
-import TextEditor from './components/editor/editor';
 import './style.css';
+import Authorization from './auth.tsx'
+import { MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+import NotePadSys from './notepad.tsx';
 
 export default function App() {
 
   return (
     <MantineProvider>
-      <Grid gutter={{ base: 0 }}>
-        <Grid.Col span={2}>
-          <SidePanel />
-        </Grid.Col>
-        <Divider orientation='vertical' />
-        <Grid.Col span={`auto`}>
-          <TextEditor date='lol' />
-        </Grid.Col> 
-      </Grid>
+      <Notifications />
+      <NotePadSys />
     </MantineProvider>
   )
 }

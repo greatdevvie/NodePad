@@ -7,6 +7,12 @@ const infos = {
     body: '',
 }
 
+/* Необходимо попробовать метод useContext как хранилище для переменных, которые, в последствии, можно будет перенести уже в БД.
+    Помимо этого, нужно изучить принцип работы Dexie и понять, насколько совместимы Dexie и useContext.
+
+    После этого, нужно составить Авторизационную страницу.
+*/
+
 const InfoProvider = ({ children }: PropsWithChildren) => {
   const [infot, setInfot] = useState('');
 
@@ -14,7 +20,6 @@ const InfoProvider = ({ children }: PropsWithChildren) => {
 
   const setBody = () => setInfot(infos.body);
 
-  // Передаем данные и функции в контекст провайдера
   return (
     <MainContext.Provider value={{ infot, setHeader, setBody, infos }}>
       {children}

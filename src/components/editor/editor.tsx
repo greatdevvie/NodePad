@@ -10,22 +10,30 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from "@tiptap/extension-link";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { DeleteIcon } from './assets/icon.tsx';
-import MainContext from "../../context/MainContext.ts";
+import { db } from "../../data/db.ts";
+import moment from "moment";
 
 interface EditorType {
     date: string,
     value: string,
 }
 
-export default function TextEditor({ date }: EditorType) {
-    const content = useContext(MainContext);
-
+export default function TextEditor() {
     const [value, setValue] = useState({
         header: '',
         body: ''
     })
+    const date = moment().format('MM.DD.YYYY HH:mm')
+
+    async function deleteNote() {
+        try {
+          await db.notes.clear();
+        } catch (error) {
+          console.log(error)
+        }
+    }  
 
     const editor = useEditor({
         extensions: [
@@ -38,7 +46,7 @@ export default function TextEditor({ date }: EditorType) {
             TextAlign.configure({ types: ['heading', 'paragraph'] }),
             Placeholder.configure({ placeholder: 'Input Body' })
         ],
-        content: '',
+        content: value.body,
         onUpdate: (({ editor }) => {
             setValue({
                 ...value,
@@ -89,13 +97,13 @@ export default function TextEditor({ date }: EditorType) {
                         <RichTextEditor.Redo />
                     </RichTextEditor.ControlsGroup>
                     <Flex justify={`end`} align={`end`}>
-                        <Button size="xs" color="default" variant="default">
+                        <Button size="xs" color="default" variant="default" onClick={deleteNote}>
                             <DeleteIcon width="14" height="16" />
                         </Button>
                     </Flex>
                 </RichTextEditor.Toolbar>
             </RichTextEditor>
-            <Text ta={'center'} my={16} size="sm" opacity={0.7}>{date}</Text>
+            <Text ta={'center'} my={16} fw={"bold"} size="sm" opacity={0.7}>{date}</Text>
             <Textarea px={`1rem`} variant="unstyled" size="xl" value={value.header} autosize maxRows={1} placeholder="Input Header" style={{fontWeight: 'bold'}} onInput={(e) => {
                     setValue({
                         ...value,

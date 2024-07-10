@@ -1,22 +1,23 @@
 import Dexie, { type EntityTable } from 'dexie';
 
-interface Friend {
+interface Nodes {
   id: number;
-  name: string;
-  age: number;
+  time: string;
+  header: string;
+  body: string;
 }
 
-const db = new Dexie('FriendsDatabase') as Dexie & {
-  friends: EntityTable<
-    Friend,
-    'id' // primary key "id" (for the typings only)
+const db = new Dexie('NodeDatabase') as Dexie & {
+  notes: EntityTable<
+    Nodes,
+    'id' 
   >;
 };
 
 // Schema declaration:
 db.version(1).stores({
-  friends: '++id, name, age' // primary key "id" (for the runtime!)
+  notes: '++id, time, header, body'
 });
 
-export type { Friend };
+export type { Nodes };
 export { db };
