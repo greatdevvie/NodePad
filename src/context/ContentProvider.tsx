@@ -2,6 +2,7 @@ import React, { createContext, useState, ReactNode } from 'react';
 
 export interface ContentState {
   id: number;
+  isDisabled: boolean;
   header: string;
   body: React.SetStateAction<string>;
 }
@@ -14,7 +15,7 @@ export interface ContentContextType {
 export const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
 export const ContentProvider = ({ children }: { children: ReactNode }) => {
-  const [context, setContext] = useState<ContentState>({ id: 0, header: '', body: '' });
+  const [context, setContext] = useState<ContentState>({ id: 0, isDisabled: true, header: '', body: '' });
 
   console.log(context)
 

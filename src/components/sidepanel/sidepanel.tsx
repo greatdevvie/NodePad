@@ -7,7 +7,6 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useContent } from "../../hooks/useContent";
 
 interface ItemType {
-    id: number,
     header: string,
     time: string,
     exText: React.SetStateAction<string>,
@@ -15,14 +14,14 @@ interface ItemType {
     handleClick: () => void,
 }
 
-function Item({ id, header, time, exText, isChosen, handleClick }: ItemType) {
+function Item({ header, time, exText, isChosen, handleClick }: ItemType) {
    return (
         <Box className={isChosen ? `` : styles.menuItem} py={14} px={28} onClick={handleClick} bg={isChosen ? `rgba(192, 192, 192, 0.1)` : ``} style={{ cursor: 'pointer' }}>
             <Text truncate="end" size="md" style={{fontWeight: 'bold'}}>
                 {header}
             </Text>
             <Group style={{ display: 'flex', whiteSpace: 'nowrap', flexWrap: 'nowrap' }}>
-                <Text size="sm" component="span" style={{fontWeight: '600'}}>{id} {time}</Text>
+                <Text size="sm" component="span" style={{fontWeight: '600'}}>{time}</Text>
                 <Text size="sm" component="span" truncate="end" style={{ opacity: 0.7 }} dangerouslySetInnerHTML={{ __html: exText }} />
             </Group>
         </Box>
@@ -48,6 +47,7 @@ export default function SidePanel() {
         try {
             setContext({
                 id: 0,
+                isDisabled: false,
                 header: '',
                 body: '<p></p>'
             })
@@ -62,14 +62,15 @@ export default function SidePanel() {
                 setSearchVal(e.currentTarget.value)
             }} />
             <Divider />
-            <Item key='new' id={0} header='Новая заметка' time={currentTime} exText='No additional text' isChosen={false} handleClick={addNote}/>
+            <Item key='new' header='Новая заметка' time={currentTime} exText='No additional text' isChosen={context.id === 0 ? true : false} handleClick={addNote}/>
             <Divider />
             {notes?.filter(el => el.header.toLowerCase().includes(searchVal)).map(el => {
                 return (
                     <div key={el.id}>
-                        <Item id={el.id} header={el.header} time={el.time} exText={el.body} isChosen={false} handleClick={() => {
+                        <Item header={el.header} time={el.time} exText={el.body} isChosen={context.id === el.id ? true : false} handleClick={() => {
                             setContext({
                                 id: el.id,
+                                isDisabled: false,
                                 header: el.header,
                                 body: el.body
                             })
