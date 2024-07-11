@@ -2,27 +2,22 @@ import { Button, Flex, TextInput, PasswordInput, Title, Accordion, Divider } fro
 import '@mantine/core/styles.css';
 import { useState } from "react";
 import { notifications } from '@mantine/notifications';
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Authorization() {
     const [value, setValue] = useState({
         username: '',
         password: '',
     })
+    const navigate = useNavigate();
 
     function isValid(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         if ((value.username === 'Admin') && (value.password === 'admin')) {
-            notifications.show({
-                id: 'hello-there',
-                autoClose: 3000,
-                title: "Уааля",
-                message: 'Ты вошел в систему, дон!',
-                color: 'green',
-                loading: false,
-            });
+            navigate('/notepad')
         } else {
             notifications.show({
-                id: 'hello-there',
+                id: 'oops',
                 autoClose: 5000,
                 title: "Упс",
                 message: 'Неверный логин или пароль, дон. Перепечатай там, дон.',

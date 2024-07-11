@@ -23,8 +23,6 @@ export default function TextEditor() {
     const [opened, { open, close }] = useDisclosure(false);
     const date = moment().format('MM.DD.YYYY HH:mm')
 
-    console.log(content)
-
     useEffect(() => {
         editor?.commands?.setContent(context.body, false);
         setContent(context.body);
@@ -40,7 +38,7 @@ export default function TextEditor() {
 
     async function addNote() {
         try {
-            if ((context.header !== '') && (context.body !== '')) {
+            if ((context.header !== '') && (context.body !== '') && (context.body.length > 3) && (context.header.length > 3)) {
                 const time = date;
                 const id = context.id;
                 const header = context.header;
@@ -100,7 +98,7 @@ export default function TextEditor() {
         onUpdate: (({ editor }) => {
             setContext({
                 ...context,
-                body: editor.getHTML().replace('<p>', '').replace('</p>', '')
+                body: editor.getHTML()
             });
             addNote();
         })
@@ -109,13 +107,13 @@ export default function TextEditor() {
     return (
         <Flex direction={`column`} w={`100%`} py={8}>
             <Modal opened={opened} onClose={close} withCloseButton={false}>
-                <Text>Вы точно хотите удалить заметку с тайтлом "<strong>{context.header}</strong>" ?</Text>
+                <Text ta={'center'} size="md">Вы точно хотите удалить заметку с тайтлом "<strong>{context.header}</strong>" ?</Text>
                 <Flex justify={`space-between`} mt={24}>
-                    <Button onClick={() => {
+                    <Button color="green" onClick={() => {
                         deleteNote();
                         close();
                     }}>Sir, Yes, Sir!</Button>
-                    <Button onClick={close}>Sir, No, Sir!</Button>
+                    <Button color="red" onClick={close}>Sir, No, Sir!</Button>
                 </Flex>
             </Modal>
             {context.isDisabled ? 

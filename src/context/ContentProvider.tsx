@@ -17,8 +17,6 @@ export const ContentContext = createContext<ContentContextType | undefined>(unde
 export const ContentProvider = ({ children }: { children: ReactNode }) => {
   const [context, setContext] = useState<ContentState>({ id: 0, isDisabled: true, header: '', body: '' });
 
-  console.log(context)
-
   return (
     <ContentContext.Provider value={{ context, setContext }}>
       {children}
