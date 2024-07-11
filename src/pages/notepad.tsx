@@ -1,6 +1,6 @@
 import { Divider, Grid } from '@mantine/core';
-import SidePanel from './components/sidepanel/sidepanel';
-import TextEditor from './components/editor/editor';
+import SidePanel from '../components/sidepanel/sidepanel';
+import TextEditor from '../components/editor/editor';
 
 export default function NotePadSys() {
     return (

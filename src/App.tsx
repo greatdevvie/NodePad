@@ -2,8 +2,9 @@ import '@mantine/core/styles.css';
 import './style.css';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import NotePadSys from './notepad.tsx';
+import NotePadSys from './pages/notepad.tsx';
 import { ContentProvider } from './context/ContentProvider.tsx';
+import Authorization from './pages/auth.tsx';
 
 export default function App() {
 
@@ -11,7 +12,7 @@ export default function App() {
     <MantineProvider>
       <ContentProvider>
         <Notifications />
-        <NotePadSys />
+        <Authorization />
       </ContentProvider>
     </MantineProvider>
   )
