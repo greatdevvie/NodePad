@@ -10,30 +10,72 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from "@tiptap/extension-link";
-import { useState } from "react";
 import { DeleteIcon } from './assets/icon.tsx';
 import { db } from "../../data/db.ts";
 import moment from "moment";
-
-interface EditorType {
-    date: string,
-    value: string,
-}
+import { useContent } from "../../hooks/useContent.tsx";
+import React, { useEffect, useState } from "react";
 
 export default function TextEditor() {
-    const [value, setValue] = useState({
-        header: '',
-        body: ''
-    })
+    const { context, setContext } = useContent();
+    const [content, setContent] = useState<React.SetStateAction<string>>('<p></p>');
     const date = moment().format('MM.DD.YYYY HH:mm')
 
+    console.log(content)
+
+    useEffect(() => {
+        editor?.commands?.setContent(context.body, false);
+        setContent(context.body);
+    }, [context, setContent])
+
     async function deleteNote() {
-        try {
-          await db.notes.clear();
-        } catch (error) {
-          console.log(error)
+        if (context.id !== 0) {
+            try {
+                await db.notes.delete(context.id);
+              } catch (error) {
+                console.log(error)
+              }
         }
-    }  
+    }
+
+    const headerEditor = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setContext({
+            ...context,
+            header: e.currentTarget.value,
+        })
+        addNote();
+    }
+
+    async function addNote() {
+        try {
+            if ((context.header !== '') && (context.body !== '')) {
+                const time = date;
+                const id = context.id;
+                const header = context.header;
+                const body = context.body;
+                if (id === 0) {
+                    await db.notes.add({
+                        time,
+                        header,
+                        body
+                    }).then(function (e) {
+                        setContext({
+                            ...context,
+                            id: e
+                        })
+                    });
+                } else {
+                    await db.notes.update(id, {
+                        time,
+                        header,
+                        body
+                    });
+                }
+            }
+        } catch(e) {
+            console.log(e);
+        }
+    }
 
     const editor = useEditor({
         extensions: [
@@ -46,12 +88,10 @@ export default function TextEditor() {
             TextAlign.configure({ types: ['heading', 'paragraph'] }),
             Placeholder.configure({ placeholder: 'Input Body' })
         ],
-        content: value.body,
+        content: content,
         onUpdate: (({ editor }) => {
-            setValue({
-                ...value,
-                body: editor.getHTML()
-            })
+            setContent(editor.getHTML());
+            /*addNote();*/
         })
     })
 
@@ -104,12 +144,7 @@ export default function TextEditor() {
                 </RichTextEditor.Toolbar>
             </RichTextEditor>
             <Text ta={'center'} my={16} fw={"bold"} size="sm" opacity={0.7}>{date}</Text>
-            <Textarea px={`1rem`} variant="unstyled" size="xl" value={value.header} autosize maxRows={1} placeholder="Input Header" style={{fontWeight: 'bold'}} onInput={(e) => {
-                    setValue({
-                        ...value,
-                        header: e.currentTarget.value
-                    })
-                }} />
+            <Textarea px={`1rem`} variant="unstyled" size="xl" value={context.header} autosize maxRows={1} placeholder="Input Header" style={{fontWeight: 'bold'}} onChange={headerEditor} />
             <RichTextEditor editor={editor} style={{ border: 0 }}>
                 <RichTextEditor.Content />
             </RichTextEditor>

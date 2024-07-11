@@ -1,16 +1,18 @@
 import '@mantine/core/styles.css';
 import './style.css';
-import Authorization from './auth.tsx'
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import NotePadSys from './notepad.tsx';
+import { ContentProvider } from './context/ContentProvider.tsx';
 
 export default function App() {
 
   return (
     <MantineProvider>
-      <Notifications />
-      <NotePadSys />
+      <ContentProvider>
+        <Notifications />
+        <NotePadSys />
+      </ContentProvider>
     </MantineProvider>
   )
 }

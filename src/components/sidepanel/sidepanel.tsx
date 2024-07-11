@@ -4,23 +4,25 @@ import { useLayoutEffect, useState } from "react";
 import moment from 'moment';
 import { db } from "../../data/db";
 import { useLiveQuery } from "dexie-react-hooks";
+import { useContent } from "../../hooks/useContent";
 
 interface ItemType {
+    id: number,
     header: string,
     time: string,
-    exText: string,
+    exText: React.SetStateAction<string>,
     isChosen: boolean,
     handleClick: () => void,
 }
 
-function Item({ header, time, exText, isChosen, handleClick }: ItemType) {
+function Item({ id, header, time, exText, isChosen, handleClick }: ItemType) {
    return (
         <Box className={isChosen ? `` : styles.menuItem} py={14} px={28} onClick={handleClick} bg={isChosen ? `rgba(192, 192, 192, 0.1)` : ``} style={{ cursor: 'pointer' }}>
             <Text truncate="end" size="md" style={{fontWeight: 'bold'}}>
                 {header}
             </Text>
             <Group style={{ display: 'flex', whiteSpace: 'nowrap', flexWrap: 'nowrap' }}>
-                <Text size="sm" component="span" style={{fontWeight: '600'}}>{time}</Text>
+                <Text size="sm" component="span" style={{fontWeight: '600'}}>{id} {time}</Text>
                 <Text size="sm" component="span" truncate="end" style={{ opacity: 0.7 }} dangerouslySetInnerHTML={{ __html: exText }} />
             </Group>
         </Box>
@@ -28,6 +30,7 @@ function Item({ header, time, exText, isChosen, handleClick }: ItemType) {
 }
 
 export default function SidePanel() {
+    const { context, setContext } = useContent();
     const [searchVal, setSearchVal] = useState('');
     const [currentTime, setCurrentTime] = useState('');
     const notes = useLiveQuery(() => db.notes.toArray());
@@ -42,19 +45,16 @@ export default function SidePanel() {
     }, [setCurrentTime])
 
     async function addNote() {
-        const header = 'value.header';
-        const body = 'value.body';
-        const time = moment().format('MM.DD.YYYY HH:mm')
         try {
-            await db.notes.add({
-                time,
-                header,
-                body
-            });
+            setContext({
+                id: 0,
+                header: '',
+                body: '<p></p>'
+            })
         } catch (error) {
             console.log(error)
         }
-    }  
+    }
 
     return (
         <Box h={`100vh`}>
@@ -62,13 +62,17 @@ export default function SidePanel() {
                 setSearchVal(e.currentTarget.value)
             }} />
             <Divider />
-            <Item key='new' header="Новая заметка" time={currentTime} exText="No additional text" isChosen={false} handleClick={addNote}/>
+            <Item key='new' id={0} header='Новая заметка' time={currentTime} exText='No additional text' isChosen={false} handleClick={addNote}/>
             <Divider />
             {notes?.filter(el => el.header.toLowerCase().includes(searchVal)).map(el => {
                 return (
                     <div key={el.id}>
-                        <Item header={el.header} time={el.time} exText={el.body} isChosen={false} handleClick={() => {
-
+                        <Item id={el.id} header={el.header} time={el.time} exText={el.body} isChosen={false} handleClick={() => {
+                            setContext({
+                                id: el.id,
+                                header: el.header,
+                                body: el.body
+                            })
                         }} />
                         <Divider />
                     </div>

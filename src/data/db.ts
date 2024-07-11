@@ -4,7 +4,7 @@ interface Nodes {
   id: number;
   time: string;
   header: string;
-  body: string;
+  body: React.SetStateAction<string>;
 }
 
 const db = new Dexie('NodeDatabase') as Dexie & {
