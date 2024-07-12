@@ -38,7 +38,7 @@ export default function TextEditor() {
 
     async function addNote() {
         try {
-            if ((context.header !== '') && (context.body !== '') && (context.body.length > 3) && (context.header.length > 3)) {
+            if ((context.header !== '') && (context.body !== '') && (context.header.length > 3)) {
                 const time = date;
                 const id = context.id;
                 const header = context.header;
@@ -98,7 +98,7 @@ export default function TextEditor() {
         onUpdate: (({ editor }) => {
             setContext({
                 ...context,
-                body: editor.getHTML()
+                body: editor.getHTML().replace(' ', '&nbsp;')
             });
             addNote();
         })
