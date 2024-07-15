@@ -1,33 +1,10 @@
-import { Box, Divider, Group, Text, TextInput } from "@mantine/core";
-import styles from './sidepanel.module.css'
+import { Box, Divider, TextInput } from "@mantine/core";
 import { useLayoutEffect, useState } from "react";
 import moment from 'moment';
 import { db } from "../../data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useContent } from "../../hooks/useContent";
-
-interface ItemType {
-    header: string,
-    time: string,
-    exText: string,
-    isChosen: boolean,
-    handleClick: () => void,
-}
-
-function Item({ header, time, exText, isChosen, handleClick }: ItemType) {
-
-    return (
-        <Box className={isChosen ? `` : styles.menuItem} py={14} px={28} onClick={handleClick} bg={isChosen ? `rgba(192, 192, 192, 0.1)` : ``} style={{ cursor: 'pointer' }}>
-            <Text truncate="end" size="md" style={{fontWeight: 'bold'}}>
-                {header}
-            </Text>
-            <Group style={{ display: 'flex', whiteSpace: 'nowrap', flexWrap: 'nowrap' }}>
-                <Text size="sm" component="span" style={{fontWeight: '600'}}>{time}</Text>
-                <Text size="sm" component="span" truncate="end" style={{ opacity: 0.7 }}>{exText}</Text>
-            </Group>
-        </Box>
-    )
-}
+import SideItem from "./sideitem/SideItem";
 
 export default function SidePanel() {
     const { context, setContext } = useContent();
@@ -63,13 +40,13 @@ export default function SidePanel() {
                 setSearchVal(e.currentTarget.value)
             }} />
             <Divider />
-            <Item key='new' header='Новая заметка' time={currentTime} exText='No additional text' isChosen={context.id === 0 ? true : false} handleClick={addNote}/>
+            <SideItem key='new' header='Новая заметка' time={currentTime} exText='No additional text' isChosen={context.id === 0 ? true : false} handleClick={addNote}/>
             <Divider />
             {notes?.filter(el => el.header.toLowerCase().includes(searchVal)).map(el => {
                 const body = el.body.toString().split('&nbsp;').join(' ').split(/<[^>]*>/g).join(''); /* Багфикс: отображаться всё будет в нативном формате без искосов в размере и без изменений в шрифтовке. */
                 return (
                     <div key={el.id}>
-                        <Item header={el.header} time={el.time} exText={body} isChosen={context.id === el.id ? true : false} handleClick={() => {
+                        <SideItem header={el.header} time={el.time} exText={body} isChosen={context.id === el.id ? true : false} handleClick={() => {
                             setContext({
                                 id: el.id,
                                 isDisabled: false,
