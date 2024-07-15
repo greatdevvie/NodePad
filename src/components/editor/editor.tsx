@@ -21,7 +21,7 @@ export default function TextEditor() {
     const { context, setContext } = useContent();
     const [content, setContent] = useState<React.SetStateAction<string>>('');
     const [opened, { open, close }] = useDisclosure(false);
-    const date = moment().format('MM.DD.YYYY HH:mm')
+    const time = moment().format('MM.DD.YYYY HH:mm')
     const id = context.id;
     const header = context.header;
     const body = context.body;
@@ -41,7 +41,6 @@ export default function TextEditor() {
     }
 
     async function addNote() {
-        const time = date;
         try {
             if ((context.header !== '') && (context.body !== '') && (context.header.length > 3)) {
                 if (id === 0) {
@@ -169,7 +168,7 @@ export default function TextEditor() {
                             </Flex>
                         </RichTextEditor.Toolbar>
                     </RichTextEditor>
-                    <Text ta={'center'} my={16} fw={"bold"} size="sm" opacity={0.7}>{date}</Text>
+                    <Text ta={'center'} my={16} fw={"bold"} size="sm" opacity={0.7}>{time}</Text>
                     <Textarea px={`1rem`} variant="unstyled" size="xl" value={context.header} autosize maxRows={1} placeholder="Input Header" style={{fontWeight: 'bold', disabled: "transparent"}} onChange={headerEditor} />
                     <RichTextEditor editor={editor} style={{ border: 0 }}>
                         <RichTextEditor.Content />
