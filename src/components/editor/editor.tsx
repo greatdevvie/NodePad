@@ -22,10 +22,14 @@ export default function TextEditor() {
     const [content, setContent] = useState<React.SetStateAction<string>>('');
     const [opened, { open, close }] = useDisclosure(false);
     const date = moment().format('MM.DD.YYYY HH:mm')
+    const id = context.id;
+    const header = context.header;
+    const body = context.body;
 
     useEffect(() => {
         editor?.commands?.setContent(context.body, false);
         setContent(context.body);
+        console.log(content);
     }, [context, setContent])
 
     const headerEditor = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -37,12 +41,9 @@ export default function TextEditor() {
     }
 
     async function addNote() {
+        const time = date;
         try {
             if ((context.header !== '') && (context.body !== '') && (context.header.length > 3)) {
-                const time = date;
-                const id = context.id;
-                const header = context.header;
-                const body = context.body;
                 if (id === 0) {
                     await db.notes.add({
                         time,
