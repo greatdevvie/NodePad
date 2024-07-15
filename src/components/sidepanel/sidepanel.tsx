@@ -4,7 +4,7 @@ import moment from 'moment';
 import { db } from "../../data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useContent } from "../../hooks/useContent";
-import SideItem from "./sideitem/SideItem";
+
 
 export default function SidePanel() {
     const { context, setContext } = useContent();
@@ -40,13 +40,13 @@ export default function SidePanel() {
                 setSearchVal(e.currentTarget.value)
             }} />
             <Divider />
-            <SideItem key='new' header='Новая заметка' time={currentTime} exText='No additional text' isChosen={context.id === 0 ? true : false} handleClick={addNote}/>
+            <Item key='new' header='Новая заметка' time={currentTime} exText='No additional text' isChosen={context.id === 0 ? true : false} handleClick={addNote}/>
             <Divider />
             {notes?.filter(el => el.header.toLowerCase().includes(searchVal)).map(el => {
                 const body = el.body.toString().split('&nbsp;').join(' ').split(/<[^>]*>/g).join(''); /* Багфикс: отображаться всё будет в нативном формате без искосов в размере и без изменений в шрифтовке. */
                 return (
                     <div key={el.id}>
-                        <SideItem header={el.header} time={el.time} exText={body} isChosen={context.id === el.id ? true : false} handleClick={() => {
+                        <Item header={el.header} time={el.time} exText={body} isChosen={context.id === el.id ? true : false} handleClick={() => {
                             setContext({
                                 id: el.id,
                                 isDisabled: false,

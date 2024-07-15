@@ -10,7 +10,7 @@ interface ItemType {
     handleClick: () => void,
 }
 
-export default function SideItem({ header, time, exText, isChosen, handleClick }: ItemType) {
+function SideItem({ header, time, exText, isChosen, handleClick }: ItemType) {
 
     return (
         <Box className={isChosen ? `` : styles.menuItem} py={14} px={28} onClick={handleClick} bg={isChosen ? `rgba(192, 192, 192, 0.1)` : ``} style={{ cursor: 'pointer' }}>
@@ -24,3 +24,5 @@ export default function SideItem({ header, time, exText, isChosen, handleClick }
         </Box>
     )
 }
+
+export default SideItem

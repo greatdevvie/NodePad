@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Button, Flex, Modal, Text, Textarea, Title } from "@mantine/core";
 import '@mantine/tiptap/styles.css';
 import { RichTextEditor } from '@mantine/tiptap';
@@ -14,17 +15,14 @@ import { DeleteIcon } from './assets/icon.tsx';
 import { db } from "../../data/db.ts";
 import moment from "moment";
 import { useContent } from "../../hooks/useContent.tsx";
-import React, { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 
 export default function TextEditor() {
     const { context, setContext } = useContent();
     const [content, setContent] = useState<React.SetStateAction<string>>('');
+    console.log(content)
     const [opened, { open, close }] = useDisclosure(false);
-    const time = moment().format('MM.DD.YYYY HH:mm')
-    const id = context.id;
-    const header = context.header;
-    const body = context.body;
+    const date = moment().format('MM.DD.YYYY HH:mm')
 
     useEffect(() => {
         editor?.commands?.setContent(context.body, false);
@@ -37,15 +35,19 @@ export default function TextEditor() {
             ...context,
             header: e.currentTarget.value,
         })
-        addNote();
+        AddNote();
     }
 
-    async function addNote() {
+    async function AddNote() {
         try {
             if ((context.header !== '') && (context.body !== '') && (context.header.length > 3)) {
+                const time = date;
+                const id = context.id;
+                const header = context.header;
+                const body = context.body;
                 if (id === 0) {
                     await db.notes.add({
-                        time,
+                        date,
                         header,
                         body
                     }).then(function (e) {
@@ -56,7 +58,7 @@ export default function TextEditor() {
                     });
                 } else {
                     await db.notes.update(id, {
-                        time,
+                        date,
                         header,
                         body
                     });
@@ -100,7 +102,7 @@ export default function TextEditor() {
                 ...context,
                 body: editor.getHTML().replace(' ', '&nbsp;')
             });
-            addNote();
+            AddNote();
         })
     })
 
