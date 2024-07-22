@@ -17,12 +17,20 @@ import moment from "moment";
 import { useContent } from "../../hooks/useContent.tsx";
 import { useDisclosure } from "@mantine/hooks";
 
+
+
+
 export default function TextEditor() {
     const { context, setContext } = useContent();
     const [content, setContent] = useState<React.SetStateAction<string>>('');
     console.log(content)
     const [opened, { open, close }] = useDisclosure(false);
-    const date = moment().format('MM.DD.YYYY HH:mm')
+    const date : string = moment().format('MM.DD.YYYY HH:mm')
+        const id = context.id;
+        const header = context.header;
+        const body = context.body;
+
+    console.log(date, "TextEditor")
 
     useEffect(() => {
         editor?.commands?.setContent(context.body, false);
@@ -39,6 +47,7 @@ export default function TextEditor() {
     }
 
     async function AddNote() {
+
         try {
             if ((context.header !== '') && (context.body !== '') && (context.header.length > 3)) {
                 const time = date;
@@ -47,7 +56,7 @@ export default function TextEditor() {
                 const body = context.body;
                 if (id === 0) {
                     await db.notes.add({
-                        date,
+                        time,
                         header,
                         body
                     }).then(function (e) {
@@ -58,7 +67,7 @@ export default function TextEditor() {
                     });
                 } else {
                     await db.notes.update(id, {
-                        date,
+                        time,
                         header,
                         body
                     });

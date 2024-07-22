@@ -2,18 +2,22 @@ import { Button, Flex, TextInput, PasswordInput, Title, Accordion, Divider } fro
 import '@mantine/core/styles.css';
 import { useState } from "react";
 import { notifications } from '@mantine/notifications';
-import { Link, useNavigate } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 
 export default function Authorization() {
-    const [value, setValue] = useState({
-        username: '',
-        password: '',
-    })
+    const [value, setValue] = useState<{ [key: string]: string }>({})
     const navigate = useNavigate();
 
-    function isValid(e: React.MouseEvent<HTMLButtonElement>) {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        setValue((prevState) => ({
+            ...prevState,
+            [event.target.name]: event.target.value,
+        }))
+    }
+
+    const isValid = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if ((value.username === 'Admin') && (value.password === 'admin')) {
+        if (value.username === 'Admin' && value.password === 'admin') {
             navigate('/notepad')
         } else {
             notifications.show({
@@ -28,24 +32,18 @@ export default function Authorization() {
     }
 
     return (
-        <Flex direction={`column`} w={`100vw`} h={`100vh`} justify={`center`} align={`center`}>
-            <Title order={2} ta={`center`} mb={`lg`}>Окно входа</Title>
-            <Flex direction={`column`} gap="lg">
-                <TextInput size="lg" withAsterisk label="Юзернейм" placeholder="username" radius="md" onInput={(e) => {
-                    setValue({
-                        ...value,
-                        username: e.currentTarget.value
-                    })
-                }} />
-                <PasswordInput size="lg" withAsterisk label="Пароль" placeholder="password" radius="md" onInput={(e) => {
-                    setValue({
-                        ...value,
-                        password: e.currentTarget.value
-                    })
-                }} />
+        <Flex direction="column" w="100vw" h="100vh" justify="center" align="center">
+            <Title order={2} ta="center" mb="lg">Окно входа</Title>
+            <Flex direction="column" gap="lg">
+                <Form
+                    onChange={handleChange}
+                >
+                    <TextInput size="lg" withAsterisk label="Юзернейм" name="username" placeholder="username" radius="md" value={value.username || ''} />
+                    <PasswordInput size="lg" withAsterisk label="Пароль" name="password" placeholder="password" radius="md" value={value.password || ''} />
+                </Form>
             </Flex>
-            <Flex justify={`center`} align={`center`}>
-                <Button size={`xl`} mt={`xl`} onClick={isValid} variant="default">Войти</Button>
+            <Flex justify="center" align="center">
+                <Button size="xl" mt="xl" onClick={isValid} variant="default">Войти</Button>
             </Flex>
             <Divider my='xl' />
             <Accordion>
