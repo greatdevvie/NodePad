@@ -25,12 +25,11 @@ export default function TextEditor() {
     const [content, setContent] = useState<React.SetStateAction<string>>('');
     console.log(content)
     const [opened, { open, close }] = useDisclosure(false);
-    const date : string = moment().format('MM.DD.YYYY HH:mm')
-        const id = context.id;
-        const header = context.header;
-        const body = context.body;
+    const id = context.id;
+    const header = context.header;
+    const body = context.body;
+    const time = moment().format('MM.DD.YYYY HH:mm')
 
-    console.log(date, "TextEditor")
 
     useEffect(() => {
         editor?.commands?.setContent(context.body, false);
@@ -50,10 +49,8 @@ export default function TextEditor() {
 
         try {
             if ((context.header !== '') && (context.body !== '') && (context.header.length > 3)) {
-                const time = date;
-                const id = context.id;
-                const header = context.header;
-                const body = context.body;
+
+            
                 if (id === 0) {
                     await db.notes.add({
                         time,
